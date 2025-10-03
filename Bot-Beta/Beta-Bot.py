@@ -265,13 +265,23 @@ async def preguntar_conexion(update: Update, context: ContextTypes.DEFAULT_TYPE)
 async def preguntar_revision(update: Update, context: ContextTypes.DEFAULT_TYPE):
     t = _nl(update.message.text)
     if t == "si":
-        await update.message.reply_text("✅ Si aún falla, reinicia tu módem.\n\n🤖 ¿Se solucionó? (si/no)")
+        # ✅ Pasos de entorno empresarial, sin reiniciar módem
+        await update.message.reply_text(
+            "🛠️ Si aún falla, prueba lo siguiente:\n" 
+            " A) Deshabilita y habilita el *adaptador de red* (Panel de control > Centro de redes → Cambiar configuración del adaptador).\n" 
+            " B) Prueba *otro puerto o cable*\n"
+            "🤖 ¿Se solucionó? (si/no)",
+            parse_mode="Markdown"
+        )
         return CONFIRMAR
     if t == "no":
-        await update.message.reply_text("👉 Revisa primero la conexión. ¿Deseas que lo dejemos en seguimiento con un ticket? (si/no)")
-        return CONFIRMAR
+        await update.message.reply_text(
+            "👉 Realiza primero las verificaciones indicadas. Si persiste, puedo **levantar un ticket** para redes. ¿Deseas hacerlo? (si/no)"
+        )
+        return CONFIRMAR_TICKET
     await update.message.reply_text("Responde 'si' o 'no'.")
     return PREGUNTAR_REVISION
+
 
 async def confirmar_solucion(update: Update, context: ContextTypes.DEFAULT_TYPE):
     t = _nl(update.message.text)
